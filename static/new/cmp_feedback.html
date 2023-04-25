@@ -1,0 +1,165 @@
+{% extends 'header.html'%}
+{% block content %}
+
+
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"> -->
+<link rel="stylesheet" href="../static/job_css/animate.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+<!-- 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
+
+<!-- Swal alert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>  
+<link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'></link>
+
+
+<br>
+<section class="site-section">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-12">
+        <form action="/cmpfeedback" class="p-4 p-md-5 border rounded" method="POST" id="fileUploadForm"
+          enctype="multipart/form-data">
+          <h3 class="text-black mb-5 border-bottom pb-2">Post Feedback</h3>
+          <br>
+          <div class="row">
+            <div class="form-group">
+              <label for="company-name"><b>Company Name</b></label>
+              <input type="text" class="form-control" name="cmpname" id="company-name" placeholder="Company Name"
+                required>
+            </div>
+          </div>
+          <br>
+
+
+          <div class="row">
+            <div class="col">
+              <label for="company-name"><b>Head Name</b></label>
+              <input type="text" class="form-control" name="designation" id="company-name" placeholder="Name"
+                required>
+            </div>
+            <br>
+
+            <div class="row">
+              <div class="form-group">
+                <label for="job-description"><b>Feedback</b></label>
+                <textarea name="Feed_back" class="form-control" id="job-title" cols="20" rows="10"
+                  placeholder="Feedback" required></textarea>
+              </div>
+            </div>
+            <br>
+
+            <div class="row">
+              <div class="form-group">
+                <label for="job-description"><b>Company Image</b></label>
+                <input class="form-control" name="logo" type="file" id="formFile" required>
+              </div>
+            </div>
+            <br>
+
+
+            <br>
+
+            <div class="row">
+              <div class="row align-items-center mb-5">
+                <div class="col-lg-4 ml-auto">
+                  <div class="row">
+                    <div class="col-6">
+                      <button type="submit" id="btnSubmit"
+                        class="btn btn-block btn-primary btn-md">Save Feedback</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="spo" class="testemonial">
+  <div class="container">
+
+    <div class="gallary-header text-center">
+      <h2>
+        student feedback
+      </h2>
+
+    </div>
+    <!--/.gallery-header-->
+
+    <div class="owl-carousel owl-theme" id="testemonial-carousel">
+{% for cmpName,cmp_head,feedback,cmp_logos in final_lst %}
+      <div class="home1-testm item" style="height: 500px;">
+        <div class="home1-testm-single text-center" style="height: 400px;">
+          <div class="home1-testm-img">
+            <img src="../static/feedback_logo/{{cmp_logos}}" alt="img" />
+          </div>
+          <!--/.home1-testm-img-->
+          <div class="home1-testm-txt">
+            <span class="icon section-icon">
+              <i class="fa fa-quote-left" aria-hidden="true"></i>
+            </span>
+            <p>
+              “{{feedback}}”
+            </p>
+            <h3>
+              <a href="#">
+                {{cmp_head}}
+              </a>
+            </h3>
+            <h4>{{cmpName}}</h4>
+          </div>
+          <!--/.home1-testm-txt-->
+        </div>
+        <!--/.home1-testm-single-->
+
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</section>
+
+<script>
+  $(document).ready(function () {
+
+    $("#btnSubmit").click(function (event) {
+      event.preventDefault();
+      var form = $('#fileUploadForm')[0];
+      var data = new FormData(form);
+      $("#btnSubmit").prop("disabled", true);
+      $.ajax({
+        type: "POST",
+        enctype: 'multipart/form-data',
+        url: "cmpfeedback",
+        data: data,
+        processData: false,
+        contentType: false,
+        cache: false,
+        timeout: 600000,
+        success: function (data) {
+          if (data == "success") {
+            // alert("Feedback Added Successfully!")
+            swal("Feedback Added Successfully!", " ", "success");  
+            document.getElementById("fileUploadForm").reset();
+            
+          }
+        },
+        error: function (e) {
+          console.log("ERROR : ", e);
+
+        }
+      });
+    });
+  });
+</script>
+
+{% endblock %}
